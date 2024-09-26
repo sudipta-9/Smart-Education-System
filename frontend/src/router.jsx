@@ -4,6 +4,7 @@ import NotFound from "./layouts/NotFound";
 import HomeLayout from "./layouts/HomeLayout";
 import Home from "./Pages/Home";
 import About from "./Pages/About";
+import Post from "./Pages/Post";
 import Job from "./Pages/Job";
 import Resume from "./Pages/Resume";
 import Course from "./Pages/Course";
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
             {
                 path: "/about",
                 element: <About />,
+            },
+            {
+                path: "/post",
+                element: <Post />,
             },
             {
                 path: "/job-section",
