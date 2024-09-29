@@ -12,14 +12,11 @@ router.post("/register", async (req, res) => {
     const { name, username, password, email, address, phone } = req.body;
     if (!name || !username || !password || !email || !address || !phone)
       throw Error("Please enter all required fields.");
-    //find already registered users
     const existingUser = await prisma.user.findUnique({
       where: { email: email },
     });
     if (existingUser) throw Error("Email already exists!");
-    //encript password
     const hash = bcrypt.hashSync(password, 10);
-    //create new user
     const newUser = await prisma.user.create({
       data: {
         name: name,
@@ -135,16 +132,58 @@ router.get("/delete-user", async (req, res) => {
   }
 });
 
+// profile add
 router.get("/profile", async (req, res) => {
   try {
     const { uId } = req.query;
+    if (!uId) {
+      return res.status(400).send({ message: "User ID is required" });
+    }
     const user = await prisma.user.findUnique({
       where: { id: uId },
     });
-    if (!user) throw Error("User not found!");
+
+    if (!user) {
+      return res.status(404).send({ message: "User not found" });
+    }
     res.status(200).send({ data: user });
   } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+});
+
+// get all courses from database
+router.get("/courses", async (req, res) => {
+  try {
+    const courses = await prisma.course.findMany();
+    if (courses.length === 0) throw new Error("No courses found!");
+    res.status(200).send({ data: courses });
+  } catch (error) {
     res.status(404).send({ message: error.message });
+  }
+});
+
+// add courses
+router.post("/add-course", async (req, res) => {
+  try {
+    const courses = req.body;
+    if (!Array.isArray(courses)) {
+      throw new Error("Input data must be an array of courses");
+    }
+    const newCourses = await prisma.course.createMany({
+      data: courses.map(course => ({
+        title: course.title,
+        level: course.level,
+      })),
+    });
+    res.status(200).send({
+      message: "Courses created successfully",
+      data: newCourses,
+    });
+  } catch (error) {
+    res.status(400).send({
+      message: "Error creating courses: " + error.message,
+    });
   }
 });
 

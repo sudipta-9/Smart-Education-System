@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'; 
 import { Container, Row, Col, Form, Button, Spinner, ListGroup } from 'react-bootstrap';
 
 const Course = () => {
@@ -6,6 +6,38 @@ const Course = () => {
     const [difficulty, setDifficulty] = useState('');
     const [loading, setLoading] = useState(false);
     const [results, setResults] = useState([]);
+    const [allCourses, setAllCourses] = useState([]);
+
+    // Fetch all courses when the component mounts
+    useEffect(() => {
+        const fetchAllCourses = async () => {
+            setLoading(true);
+            try {
+                const response = await fetch('http://localhost:4000/api/v1/courses');
+                const data = await response.json();
+                setAllCourses(data.courses);
+                setResults(data.courses);
+                setLoading(false);
+            } catch (error) {
+                setLoading(false);
+                setResults([{ course_title: 'Error fetching courses', organization: '', difficulty: '', url: '#' }]);
+            }
+        };
+
+        fetchAllCourses();
+    }, []);
+
+    // Filter courses based on search input
+    const handleSearch = (searchTerm) => {
+        if (!searchTerm) {
+            setResults(allCourses); // Show all courses if search input is empty
+        } else {
+            const filteredCourses = allCourses.filter((course) =>
+                course.course_title.toLowerCase().startsWith(searchTerm.toLowerCase())
+            );
+            setResults(filteredCourses);
+        }
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -50,7 +82,10 @@ const Course = () => {
                                                 type="text"
                                                 placeholder="Enter course name"
                                                 value={courseName}
-                                                onChange={(e) => setCourseName(e.target.value)}
+                                                onChange={(e) => {
+                                                    setCourseName(e.target.value);
+                                                    handleSearch(e.target.value); // Filter courses in real-time
+                                                }}
                                                 required
                                             />
                                         </Col>
@@ -89,12 +124,16 @@ const Course = () => {
                     <Container>
                         <h2 className="text-center mb-4">Recommended Courses</h2>
                         <ListGroup>
-                            {results.map((course, index) => (
-                                <ListGroup.Item key={index}>
-                                    <strong>{course.course_title}</strong> - {course.organization} ({course.difficulty})<br />
-                                    URL: <a href={course.url} target="_blank" rel="noopener noreferrer">{course.url}</a>
-                                </ListGroup.Item>
-                            ))}
+                            {results.length > 0 ? (
+                                results.map((course, index) => (
+                                    <ListGroup.Item key={index}>
+                                        <strong>{course.course_title}</strong> - {course.organization} ({course.difficulty})<br />
+                                        URL: <a href={course.url} target="_blank" rel="noopener noreferrer">{course.url}</a>
+                                    </ListGroup.Item>
+                                ))
+                            ) : (
+                                <ListGroup.Item>No courses available</ListGroup.Item>
+                            )}
                         </ListGroup>
                     </Container>
                 </section>

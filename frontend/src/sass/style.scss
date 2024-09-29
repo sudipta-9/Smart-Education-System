@@ -488,94 +488,128 @@ $header-text-color: #fff;
 
 //Profile Section
 .profile-section {
-    background-color: #f7f9fc;
-    border-radius: 15px;
-    padding: 2rem;
-    transition: all 0.3s ease-in-out;
-  
-    .user-photo {
-      width: 150px;
-      height: 150px;
-      border: 5px solid #ffffff;
-      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    }
-  
-    .photo-section {
-      position: relative;
-      border: 5px solid #007bff;
-      padding: 10px;
-      transition: transform 0.3s;
-      &:hover {
-        transform: scale(1.05);
-      }
-    }
-  
-    .photo-edit-icon {
-      position: absolute;
-      bottom: 10px;
-      right: 10px;
-      background: #007bff;
-      color: #fff;
-      padding: 8px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: none;
-    }
-  
-    .photo-section:hover .photo-edit-icon {
-      display: block;
-      transition: opacity 0.3s ease-in-out;
-    }
-  
-    .edit-icon {
-      cursor: pointer;
-      margin-left: 5px;
-      color: #007bff;
-    }
-  
-    .contact-icons a {
-      font-size: 1.8rem;
-      margin-right: 15px;
-      color: #007bff;
-      transition: color 0.3s;
-      &:hover {
-        color: #0056b3;
-      }
-    }
-  
-    .skills-section {
-      h5 {
-        font-weight: bold;
-        color: #0a0a0a;
-      }
-  
-      .badge {
-        font-size: 1rem;
-        font-weight: 500;
-        color: black;
-        background-color: #f8f9fa;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding-right: 5px;
-      }
-  
-      .btn-danger {
-        background-color: #dc3545;
-        border: none;
-      }
-    }
-  
-    .community-post-section .card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 50px;
+    
+    .profile-card {
+      display: flex;
+      background: #fff;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
       border-radius: 10px;
-      background-color: #ffffff;
-    }
+      overflow: hidden;
+      transform: perspective(1000px) rotateY(0deg);
+      transition: transform 0.5s;
   
-    .new-post {
-      textarea {
-        width: 100%;
-        resize: none;
-        border: 2px solid #007bff;
+      &:hover {
+        transform: perspective(1000px) rotateY(10deg);
+      }
+  
+      .profile-photo {
+        width: 250px;
+        position: relative;
+        img {
+          width: 100%;
+          border-radius: 10px;
+        }
+  
+        .edit-icon {
+          position: absolute;
+          bottom: 10px;
+          right: 10px;
+          background-color: #fff;
+          border-radius: 50%;
+          padding: 5px;
+          cursor: pointer;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+          transition: all 0.3s ease;
+  
+          &:hover {
+            background-color: #007bff;
+            color: #fff;
+          }
+        }
+      }
+  
+      .profile-details {
+        padding: 20px;
+        flex-grow: 1;
+  
+        .name {
+          font-size: 2rem;
+          font-weight: bold;
+          margin-bottom: 15px;
+        }
+  
+        .contact-info {
+          display: flex;
+          flex-wrap: wrap;
+          margin-bottom: 20px;
+  
+          a {
+            margin-right: 15px;
+            font-size: 1.5rem;
+            color: #007bff;
+            transition: color 0.3s;
+  
+            &:hover {
+              color: #0056b3;
+            }
+          }
+        }
+  
+        .bio {
+          margin-bottom: 10px;
+          font-style: italic;
+          color: #6c757d;
+        }
+  
+        .college {
+          margin-bottom: 20px;
+          font-weight: bold;
+        }
+  
+        .skills-section {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+  
+          .skills {
+            display: flex;
+            flex-wrap: wrap;
+  
+            .skill {
+              background-color: #007bff;
+              color: white;
+              padding: 5px 10px;
+              border-radius: 5px;
+              margin-right: 10px;
+              margin-bottom: 10px;
+              display: flex;
+              align-items: center;
+  
+              .delete-icon {
+                margin-left: 5px;
+                cursor: pointer;
+                color: #ff6347;
+  
+                &:hover {
+                  color: red;
+                }
+              }
+            }
+          }
+  
+          .edit-skills {
+            cursor: pointer;
+            color: #007bff;
+  
+            &:hover {
+              color: #0056b3;
+            }
+          }
+        }
       }
     }
   }  
