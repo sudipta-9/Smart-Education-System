@@ -1,145 +1,96 @@
-import React, { useState, useEffect } from 'react'; 
-import { Container, Row, Col, Form, Button, Spinner, ListGroup } from 'react-bootstrap';
+import React, { useEffect, useState } from "react"; 
+import { Form, InputGroup, Card, Container, Row, Col } from "react-bootstrap";
 
 const Course = () => {
-    const [courseName, setCourseName] = useState('');
-    const [difficulty, setDifficulty] = useState('');
-    const [loading, setLoading] = useState(false);
-    const [results, setResults] = useState([]);
-    const [allCourses, setAllCourses] = useState([]);
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const [search, setSearch] = useState("");
+  const [level, setLevel] = useState("DEFAULT"); // State for selected course level
 
-    // Fetch all courses when the component mounts
-    useEffect(() => {
-        const fetchAllCourses = async () => {
-            setLoading(true);
-            try {
-                const response = await fetch('http://localhost:4000/api/v1/courses');
-                const data = await response.json();
-                setAllCourses(data.courses);
-                setResults(data.courses);
-                setLoading(false);
-            } catch (error) {
-                setLoading(false);
-                setResults([{ course_title: 'Error fetching courses', organization: '', difficulty: '', url: '#' }]);
-            }
-        };
-
-        fetchAllCourses();
-    }, []);
-
-    // Filter courses based on search input
-    const handleSearch = (searchTerm) => {
-        if (!searchTerm) {
-            setResults(allCourses); // Show all courses if search input is empty
-        } else {
-            const filteredCourses = allCourses.filter((course) =>
-                course.course_title.toLowerCase().startsWith(searchTerm.toLowerCase())
-            );
-            setResults(filteredCourses);
+  useEffect(() => {
+    fetch("http://localhost:4000/api/v1/courses")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to fetch");
         }
-    };
+        return response.json();
+      })
+      .then((data) => setData(data))
+      .catch((error) => {
+        setError("Error: " + error.message);
+      })
+      .finally(() => setLoading(false));
+  }, []);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-        setResults([]);
+  // Filter courses based on search term and selected level
+  const filteredCourses = data?.data?.filter((course) => {
+    const matchesSearch = course.title.toLowerCase().includes(search.toLowerCase());
+    const matchesLevel = level === "DEFAULT" || course.level === level; // Check if level matches
+    return matchesSearch && matchesLevel;
+  });
 
-        try {
-            const response = await fetch(`http://127.0.0.1:5000/recommend?course_name=${courseName}&difficulty=${difficulty}`);
-            const data = await response.json();
-            setLoading(false);
+  return (
+    <>
+      {/* Header */}
+      <header className="py-5 bg-dark text-white text-center">
+        <Container>
+          <h1>Course Recommendation System</h1>
+          <p>Find the best courses tailored for your learning level and goals.</p>
+        </Container>
+      </header>
 
-            if (data.recommended_courses && data.recommended_courses.length > 0) {
-                setResults(data.recommended_courses);
-            } else {
-                setResults([{ course_title: 'No courses found', organization: '', difficulty: '', url: '#' }]);
-            }
-        } catch (error) {
-            setLoading(false);
-            setResults([{ course_title: 'Error fetching recommendations', organization: '', difficulty: '', url: '#' }]);
-        }
-    };
+      {/* Search Section */}
+      <Container className="my-4">
+        <InputGroup className="search-section mb-4">
+          <Form.Control
+            type="text"
+            placeholder="Search Course"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          <Form.Select 
+            value={level} 
+            onChange={(e) => setLevel(e.target.value)} 
+            className="ms-2"
+          >
+            <option value="DEFAULT">Default</option>
+            <option value="BASIC">Basic</option>
+            <option value="INTERMEDIATE">Intermediate</option>
+            <option value="ADVANCED">Advanced</option>
+          </Form.Select>
+        </InputGroup>
+      </Container>
 
-    return (
-        <div className="course-recommendation">
-            <header className="py-5 bg-dark text-white text-center">
-                <Container>
-                    <h1>Course Recommendation System</h1>
-                    <p>Find the best courses tailored for your learning level and goals.</p>
-                </Container>
-            </header>
-
-            <main>
-                <section className="search-section py-5">
-                    <Container>
-                        <Row className="justify-content-center">
-                            <Col md={8}>
-                                <h2 className="text-center mb-4">Find Your Course</h2>
-                                <Form onSubmit={handleSubmit}>
-                                    <Row>
-                                        <Col md={6}>
-                                            <Form.Control
-                                                type="text"
-                                                placeholder="Enter course name"
-                                                value={courseName}
-                                                onChange={(e) => {
-                                                    setCourseName(e.target.value);
-                                                    handleSearch(e.target.value); // Filter courses in real-time
-                                                }}
-                                                required
-                                            />
-                                        </Col>
-                                        <Col md={4}>
-                                            <Form.Control
-                                                as="select"
-                                                value={difficulty}
-                                                onChange={(e) => setDifficulty(e.target.value)}
-                                            >
-                                                <option value="">Select difficulty (optional)</option>
-                                                <option value="beginner">Beginner</option>
-                                                <option value="intermediate">Intermediate</option>
-                                                <option value="advanced">Advanced</option>
-                                            </Form.Control>
-                                        </Col>
-                                        <Col md={2}>
-                                            <Button type="submit" variant="success" block>
-                                                Search
-                                            </Button>
-                                        </Col>
-                                    </Row>
-                                </Form>
-
-                                {loading && (
-                                    <div className="text-center mt-3">
-                                        <Spinner animation="border" variant="success" />
-                                        <p>Searching...</p>
-                                    </div>
-                                )}
-                            </Col>
-                        </Row>
-                    </Container>
-                </section>
-
-                <section className="results-section py-5 bg-white">
-                    <Container>
-                        <h2 className="text-center mb-4">Recommended Courses</h2>
-                        <ListGroup>
-                            {results.length > 0 ? (
-                                results.map((course, index) => (
-                                    <ListGroup.Item key={index}>
-                                        <strong>{course.course_title}</strong> - {course.organization} ({course.difficulty})<br />
-                                        URL: <a href={course.url} target="_blank" rel="noopener noreferrer">{course.url}</a>
-                                    </ListGroup.Item>
-                                ))
-                            ) : (
-                                <ListGroup.Item>No courses available</ListGroup.Item>
-                            )}
-                        </ListGroup>
-                    </Container>
-                </section>
-            </main>
+      {/* Loading Spinner */}
+      {loading && (
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
         </div>
-    );
+      )}
+
+      {/* Error Message */}
+      {error && <div>{error}</div>}
+
+      {/* Courses List */}
+      {!error && data?.data && (
+        <Container>
+          <Row>
+            {filteredCourses.map((course, index) => (
+              <Col key={index} md={6} lg={4} className="mb-4">
+                <Card className="course-card">
+                  <Card.Body>
+                    <Card.Title>{course.title || "N/A"}</Card.Title>
+                    <Card.Text>Level: {course.level || "N/A"}</Card.Text>
+                  </Card.Body>
+                </Card>
+              </Col>
+            ))}
+          </Row>
+        </Container>
+      )}
+    </>
+  );
 };
 
 export default Course;

@@ -248,7 +248,6 @@ $linkedin-hover-text-color: #fff;
 }
 
 //Feedback Section
-
 .header {
     background-color: $header-bg-color;
     padding: 40px 20px;
@@ -902,70 +901,65 @@ $header-text-color: #fff;
 }
 
 // Course Section
-.course-recommendation {
-    body {
-        font-family: 'Arial', sans-serif;
-        background-color: #f4f4f4;
-        color: #333;
+// Header Styles
+.header {
+    background-color: #000;
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      letter-spacing: 1px;
     }
-
-    header {
-        h1 {
-            font-size: 3rem;
-        }
-
-        p {
-            font-size: 1.2rem;
-            margin-top: 10px;
-        }
+  }
+  
+  // Search Section Styles
+  .search-section {
+    max-width: 500px;
+    margin: 0 auto;
+    input {
+      font-size: 1.2rem;
+      padding: 10px;
     }
-
-    .search-section {
-        background-color: white;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-
-        form {
-
-            input,
-            select {
-                padding: 0.8rem;
-                border-radius: 4px;
-                border: 1px solid #ddd;
-            }
-
-            button {
-                background-color: #4caf50;
-                border: none;
-                transition: background-color 0.3s ease;
-            }
-
-            button:hover {
-                background-color: #45a049;
-            }
-        }
-
-        .text-center {
-            color: #4caf50;
-        }
+  }
+  
+  // Card Styles for Courses
+  .course-card {
+    transition: transform 0.5s ease-in-out;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  
+    &:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
     }
-
-    .results-section {
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-
-        li {
-            background-color: #f9f9f9;
-            border-left: 4px solid #4caf50;
-            transition: background-color 0.3s ease;
-
-            &:hover {
-                background-color: #f1f1f1;
-            }
-        }
+  
+    h5 {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #007bff;
     }
-
-    footer {
-        p {
-            margin: 0;
-        }
+  
+    p {
+      font-size: 1.1rem;
     }
-}
+  }
+  
+  // Media Queries for Responsiveness
+  @media (max-width: 768px) {
+    .header h1 {
+      font-size: 2rem;
+    }
+  
+    .search-section input {
+      font-size: 1rem;
+    }
+  
+    .course-card {
+      h5 {
+        font-size: 1.3rem;
+      }
+      p {
+        font-size: 1rem;
+      }
+    }
+  }
+  
