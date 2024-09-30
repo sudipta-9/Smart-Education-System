@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Button, Container } from 'react-bootstrap'; // Import Container
+import { Card, Button, Container } from 'react-bootstrap'; 
 
 const JobList = () => {
   const [jobs, setJobs] = useState([]);
 
-  // Sample data for demonstration (replace with API call)
   const fetchJobs = () => {
     const sampleJobs = [
       {
@@ -25,7 +24,6 @@ const JobList = () => {
         description: 'Work on both frontend and backend technologies.',
         company: 'Innovate Inc.',
       },
-      // Add more sample jobs as needed
     ];
     setJobs(sampleJobs);
   };
