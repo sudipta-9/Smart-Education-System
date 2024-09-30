@@ -901,7 +901,6 @@ $header-text-color: #fff;
 }
 
 // Course Section
-// Header Styles
 .header {
     background-color: #000;
     h1 {
@@ -910,8 +909,6 @@ $header-text-color: #fff;
       letter-spacing: 1px;
     }
   }
-  
-  // Search Section Styles
   .search-section {
     max-width: 500px;
     margin: 0 auto;
@@ -920,8 +917,6 @@ $header-text-color: #fff;
       padding: 10px;
     }
   }
-  
-  // Card Styles for Courses
   .course-card {
     transition: transform 0.5s ease-in-out;
     border-radius: 10px;
@@ -942,8 +937,6 @@ $header-text-color: #fff;
       font-size: 1.1rem;
     }
   }
-  
-  // Media Queries for Responsiveness
   @media (max-width: 768px) {
     .header h1 {
       font-size: 2rem;
@@ -963,3 +956,39 @@ $header-text-color: #fff;
     }
   }
   
+  //Job Section
+body {
+  font-family: Arial, sans-serif;
+}
+
+.job-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+}
+
+.job-card {
+  background: linear-gradient(135deg, #e0e0e0, #ffffff);
+  border-radius: 10px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  }
+
+  .card-body {
+    padding: 20px;
+  }
+
+  .card-title {
+    font-weight: bold;
+    font-size: 1.5rem;
+  }
+
+  .card-text {
+    color: #555;
+  }
+}

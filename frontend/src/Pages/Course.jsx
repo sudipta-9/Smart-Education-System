@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"; 
+import React, { useEffect, useState } from "react";
 import { Form, InputGroup, Card, Container, Row, Col } from "react-bootstrap";
 
 const Course = () => {
@@ -6,8 +6,7 @@ const Course = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [search, setSearch] = useState("");
-  const [level, setLevel] = useState("DEFAULT"); // State for selected course level
-
+  const [level, setLevel] = useState("DEFAULT");
   useEffect(() => {
     fetch("http://localhost:4000/api/v1/courses")
       .then((response) => {
@@ -49,9 +48,9 @@ const Course = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
-          <Form.Select 
-            value={level} 
-            onChange={(e) => setLevel(e.target.value)} 
+          <Form.Select
+            value={level}
+            onChange={(e) => setLevel(e.target.value)}
             className="ms-2"
           >
             <option value="DEFAULT">Default</option>
