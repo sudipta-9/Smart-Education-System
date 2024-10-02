@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Form, InputGroup, Card, Container, Row, Col } from "react-bootstrap";
+import { Form, InputGroup, Card, Container, Row, Col, Modal, Button } from "react-bootstrap";
 
 const Course = () => {
   const [data, setData] = useState(null);
@@ -7,6 +7,9 @@ const Course = () => {
   const [error, setError] = useState(false);
   const [search, setSearch] = useState("");
   const [level, setLevel] = useState("DEFAULT");
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+
   useEffect(() => {
     fetch("http://localhost:4000/api/v1/courses")
       .then((response) => {
@@ -28,6 +31,17 @@ const Course = () => {
     const matchesLevel = level === "DEFAULT" || course.level === level; // Check if level matches
     return matchesSearch && matchesLevel;
   });
+
+  // Handle course card click
+  const handleCourseClick = (courseLevel) => {
+    if (courseLevel === "INTERMEDIATE") {
+      setModalMessage("You need to finish the basic course.");
+      setShowModal(true);
+    } else if (courseLevel === "ADVANCED") {
+      setModalMessage("You need to finish the basic and intermediate courses.");
+      setShowModal(true);
+    }
+  };
 
   return (
     <>
@@ -77,7 +91,7 @@ const Course = () => {
           <Row>
             {filteredCourses.map((course, index) => (
               <Col key={index} md={6} lg={4} className="mb-4">
-                <Card className="course-card">
+                <Card className="course-card" onClick={() => handleCourseClick(course.level)}>
                   <Card.Body>
                     <Card.Title>{course.title || "N/A"}</Card.Title>
                     <Card.Text>Level: {course.level || "N/A"}</Card.Text>
@@ -88,6 +102,19 @@ const Course = () => {
           </Row>
         </Container>
       )}
+
+      {/* Modal for warnings */}
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Access Restricted</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>{modalMessage}</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 };

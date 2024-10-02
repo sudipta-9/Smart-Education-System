@@ -903,92 +903,64 @@ $header-text-color: #fff;
 // Course Section
 .header {
     background-color: #000;
+
     h1 {
-      font-size: 2.5rem;
-      font-weight: 700;
-      letter-spacing: 1px;
+        font-size: 2.5rem;
+        font-weight: 700;
+        letter-spacing: 1px;
     }
-  }
-  .search-section {
+}
+
+.search-section {
     max-width: 500px;
     margin: 0 auto;
+
     input {
-      font-size: 1.2rem;
-      padding: 10px;
+        font-size: 1.2rem;
+        padding: 10px;
     }
-  }
-  .course-card {
+}
+
+.course-card {
     transition: transform 0.5s ease-in-out;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  
+
     &:hover {
-      transform: scale(1.05);
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        transform: scale(1.05);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
     }
-  
+
     h5 {
-      font-size: 1.5rem;
-      font-weight: bold;
-      color: #007bff;
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #007bff;
     }
-  
+
     p {
-      font-size: 1.1rem;
+        font-size: 1.1rem;
     }
-  }
-  @media (max-width: 768px) {
+}
+
+@media (max-width: 768px) {
     .header h1 {
-      font-size: 2rem;
+        font-size: 2rem;
     }
-  
+
     .search-section input {
-      font-size: 1rem;
-    }
-  
-    .course-card {
-      h5 {
-        font-size: 1.3rem;
-      }
-      p {
         font-size: 1rem;
-      }
     }
-  }
-  
-  //Job Section
-body {
-  font-family: Arial, sans-serif;
+
+    .course-card {
+        h5 {
+            font-size: 1.3rem;
+        }
+
+        p {
+            font-size: 1rem;
+        }
+    }
 }
 
-.job-list {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  padding: 20px;
-}
-
-.job-card {
-  background: linear-gradient(135deg, #e0e0e0, #ffffff);
-  border-radius: 10px;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-  }
-
-  .card-body {
-    padding: 20px;
-  }
-
-  .card-title {
-    font-weight: bold;
-    font-size: 1.5rem;
-  }
-
-  .card-text {
-    color: #555;
-  }
-}
+//Job Section
+ 
