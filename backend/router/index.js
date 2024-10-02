@@ -187,4 +187,20 @@ router.post("/add-course", async (req, res) => {
   }
 });
 
+//delete courses
+router.get("/delete-course", async (req, res) => {
+  try {
+    const { id } = req.query;
+    const deletedCourse = await prisma.course.delete({
+      where: { id: id },
+    });
+    if (deletedCourse.affectedRows === 0) throw Error("No course found to delete");
+    res
+      .status(200)
+      .send({ message: "Course deleted successfully", data: deletedCourse });
+  } catch (error) {
+    res.status(404).send({ message: error.message });
+  }
+});
+
 export default router;

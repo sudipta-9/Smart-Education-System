@@ -35,6 +35,5 @@ enum Level {
 model Course {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
   title       String
-  created_at  DateTime @default(now())
   level       Level
 }
