@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react"; 
 import { Form, InputGroup, Card, Container, Row, Col, Modal, Button } from "react-bootstrap";
 
 const Course = () => {
@@ -43,6 +43,14 @@ const Course = () => {
     }
   };
 
+  // Grouping courses by category
+  const categories = {
+    "Programming Languages": ["JavaScript", "Python", "C", "Java", "Swift", "C++", "C#", "Rust", "Kotlin", "GO", "PHP"],
+    "Databases": ["MySQL", "PostgeSQL", "Oracle", "MongoDB"],
+    "Frameworks & Libraries": ["Bootstrap", "React", "Angular", "Tailwind CSS", "Django", "Flask", "Node js", "Next js"],
+    "Other Technologies": ["R programming", "HTML", "CSS", "TypeScript", "Git & GitHub", "DSA"]
+  };
+
   return (
     <>
       {/* Header */}
@@ -85,21 +93,28 @@ const Course = () => {
       {/* Error Message */}
       {error && <div>{error}</div>}
 
-      {/* Courses List */}
+      {/* Courses List by Category */}
       {!error && data?.data && (
         <Container>
-          <Row>
-            {filteredCourses.map((course, index) => (
-              <Col key={index} md={6} lg={4} className="mb-4">
-                <Card className="course-card" onClick={() => handleCourseClick(course.level)}>
-                  <Card.Body>
-                    <Card.Title>{course.title || "N/A"}</Card.Title>
-                    <Card.Text>Level: {course.level || "N/A"}</Card.Text>
-                  </Card.Body>
-                </Card>
-              </Col>
-            ))}
-          </Row>
+          {Object.keys(categories).map((category, catIndex) => (
+            <div key={catIndex} className="mb-5">
+              <h2 className="mb-4">{category}</h2>
+              <Row>
+                {filteredCourses
+                  .filter((course) => categories[category].includes(course.title))
+                  .map((course, index) => (
+                    <Col key={index} md={6} lg={4} className="mb-4">
+                      <Card className="course-card" onClick={() => handleCourseClick(course.level)}>
+                        <Card.Body>
+                          <Card.Title>{course.title || "N/A"}</Card.Title>
+                          <Card.Text>Level: {course.level || "N/A"}</Card.Text>
+                        </Card.Body>
+                      </Card>
+                    </Col>
+                  ))}
+              </Row>
+            </div>
+          ))}
         </Container>
       )}
 
