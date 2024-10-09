@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react"; 
-import { Form, InputGroup, Card, Container, Row, Col, Modal, Button } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { Form, InputGroup, Container, ListGroup, Modal, Button } from "react-bootstrap";
 
 const Course = () => {
   const [data, setData] = useState(null);
@@ -28,11 +28,11 @@ const Course = () => {
   // Filter courses based on search term and selected level
   const filteredCourses = data?.data?.filter((course) => {
     const matchesSearch = course.title.toLowerCase().includes(search.toLowerCase());
-    const matchesLevel = level === "DEFAULT" || course.level === level; // Check if level matches
+    const matchesLevel = level === "DEFAULT" || course.level === level;
     return matchesSearch && matchesLevel;
   });
 
-  // Handle course card click
+  // Handle course click
   const handleCourseClick = (courseLevel) => {
     if (courseLevel === "INTERMEDIATE") {
       setModalMessage("You need to finish the basic course.");
@@ -40,21 +40,16 @@ const Course = () => {
     } else if (courseLevel === "ADVANCED") {
       setModalMessage("You need to finish the basic and intermediate courses.");
       setShowModal(true);
+    } else if (courseLevel === "MIXED") {
+      setModalMessage("Mixed-level courses are available for all learners.");
+      setShowModal(true);
     }
-  };
-
-  // Grouping courses by category
-  const categories = {
-    "Programming Languages": ["JavaScript", "Python", "C", "Java", "Swift", "C++", "C#", "Rust", "Kotlin", "GO", "PHP"],
-    "Databases": ["MySQL", "PostgeSQL", "Oracle", "MongoDB"],
-    "Frameworks & Libraries": ["Bootstrap", "React", "Angular", "Tailwind CSS", "Django", "Flask", "Node js", "Next js"],
-    "Other Technologies": ["R programming", "HTML", "CSS", "TypeScript", "Git & GitHub", "DSA"]
   };
 
   return (
     <>
       {/* Header */}
-      <header className="py-5 bg-dark text-white text-center">
+      <header className="py-5 bg-dark text-white text-center header">
         <Container>
           <h1>Course Recommendation System</h1>
           <p>Find the best courses tailored for your learning level and goals.</p>
@@ -62,8 +57,8 @@ const Course = () => {
       </header>
 
       {/* Search Section */}
-      <Container className="my-4">
-        <InputGroup className="search-section mb-4">
+      <Container className="my-4 search-section">
+        <InputGroup className="mb-4">
           <Form.Control
             type="text"
             placeholder="Search Course"
@@ -75,10 +70,11 @@ const Course = () => {
             onChange={(e) => setLevel(e.target.value)}
             className="ms-2"
           >
-            <option value="DEFAULT">Default</option>
+            <option value="DEFAULT">All Levels</option>
             <option value="BASIC">Basic</option>
             <option value="INTERMEDIATE">Intermediate</option>
             <option value="ADVANCED">Advanced</option>
+            <option value="MIXED">Mixed</option> {/* Added MIXED option */}
           </Form.Select>
         </InputGroup>
       </Container>
@@ -93,28 +89,26 @@ const Course = () => {
       {/* Error Message */}
       {error && <div>{error}</div>}
 
-      {/* Courses List by Category */}
+      {/* Courses List */}
       {!error && data?.data && (
         <Container>
-          {Object.keys(categories).map((category, catIndex) => (
-            <div key={catIndex} className="mb-5">
-              <h2 className="mb-4">{category}</h2>
-              <Row>
-                {filteredCourses
-                  .filter((course) => categories[category].includes(course.title))
-                  .map((course, index) => (
-                    <Col key={index} md={6} lg={4} className="mb-4">
-                      <Card className="course-card" onClick={() => handleCourseClick(course.level)}>
-                        <Card.Body>
-                          <Card.Title>{course.title || "N/A"}</Card.Title>
-                          <Card.Text>Level: {course.level || "N/A"}</Card.Text>
-                        </Card.Body>
-                      </Card>
-                    </Col>
-                  ))}
-              </Row>
-            </div>
-          ))}
+          <ListGroup>
+            {filteredCourses.map((course, index) => (
+              <ListGroup.Item key={index} className="course-card" onClick={() => handleCourseClick(course.level)}>
+                <h5>{course.title || "N/A"}</h5>
+                <p>Level: {course.level || "N/A"}</p>
+                <p>
+                  Skills:{" "}
+                  {course.skills.length > 0
+                    ? course.skills.join(", ")
+                    : "No specific skills listed"}
+                </p>
+                <a href={course.url} target="_blank" rel="noopener noreferrer">
+                  Course Link
+                </a>
+              </ListGroup.Item>
+            ))}
+          </ListGroup>
         </Container>
       )}
 

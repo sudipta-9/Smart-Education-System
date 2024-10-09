@@ -30,10 +30,14 @@ enum Level {
   BASIC
   INTERMEDIATE
   ADVANCED
+  MIXED
 }
 
 model Course {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  title       String
-  level       Level
+  id     String   @id @default(auto()) @map("_id") @db.ObjectId
+  title  String
+  level  Level
+  url    String?
+  skills String[]
 }
+

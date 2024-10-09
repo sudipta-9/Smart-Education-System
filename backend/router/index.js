@@ -152,18 +152,24 @@ router.get("/profile", async (req, res) => {
   }
 });
 
-// get all courses from database
+// Get all courses
 router.get("/courses", async (req, res) => {
   try {
-    const courses = await prisma.course.findMany();
-    if (courses.length === 0) throw new Error("No courses found!");
+    const courses = await prisma.course.findMany({
+      where: {
+        url: { not: null },
+      },
+    });
+    if (courses.length === 0) {
+      return res.status(404).send({ message: "No courses found!" });
+    }
     res.status(200).send({ data: courses });
   } catch (error) {
-    res.status(404).send({ message: error.message });
+    res.status(500).send({ message: "Server error: " + error.message });
   }
 });
 
-// add courses
+// Add new courses
 router.post("/add-course", async (req, res) => {
   try {
     const courses = req.body;
@@ -174,6 +180,8 @@ router.post("/add-course", async (req, res) => {
       data: courses.map(course => ({
         title: course.title,
         level: course.level,
+        url: course.url,
+        skills: course.skills
       })),
     });
     res.status(200).send({
@@ -187,17 +195,14 @@ router.post("/add-course", async (req, res) => {
   }
 });
 
-//delete courses
-router.get("/delete-course", async (req, res) => {
+// Delete a course
+router.delete("/delete-course", async (req, res) => {
   try {
     const { id } = req.query;
     const deletedCourse = await prisma.course.delete({
-      where: { id: id },
+      where: { id: parseInt(id) },
     });
-    if (deletedCourse.affectedRows === 0) throw Error("No course found to delete");
-    res
-      .status(200)
-      .send({ message: "Course deleted successfully", data: deletedCourse });
+    res.status(200).send({ message: "Course deleted successfully", data: deletedCourse });
   } catch (error) {
     res.status(404).send({ message: error.message });
   }

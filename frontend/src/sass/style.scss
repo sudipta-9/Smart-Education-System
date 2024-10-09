@@ -902,65 +902,123 @@ $header-text-color: #fff;
 
 // Course Section
 .header {
-    background-color: #000;
-
+    background-color: #0a0a23;
+    color: #fff;
     h1 {
-        font-size: 2.5rem;
-        font-weight: 700;
+        font-size: 3rem;
+        font-weight: bold;
         letter-spacing: 1px;
+        animation: fadeInDown 1.2s ease-in-out;
+    }
+    p {
+        font-size: 1.2rem;
+        animation: fadeInUp 1.2s ease-in-out;
     }
 }
 
 .search-section {
-    max-width: 500px;
-    margin: 0 auto;
-
-    input {
-        font-size: 1.2rem;
-        padding: 10px;
-    }
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 1.5s ease-in-out;
 }
 
 .course-card {
-    transition: transform 0.5s ease-in-out;
+    margin-bottom: 20px;
+    background-color: #fff;
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: fadeInUp 0.8s ease-in-out;
     &:hover {
-        transform: scale(1.05);
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        transform: translateY(-5px) scale(1.03);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
     }
-
     h5 {
-        font-size: 1.5rem;
+        font-size: 1.7rem;
         font-weight: bold;
         color: #007bff;
     }
-
     p {
-        font-size: 1.1rem;
+        font-size: 1.2rem;
+    }
+    a {
+        color: #28a745;
+        font-weight: bold;
+        &:hover {
+            color: #218838;
+            text-decoration: underline;
+        }
+    }
+}
+
+.modal-content {
+    border-radius: 15px;
+    background: linear-gradient(135deg, #007bff, #6610f2);
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header, .modal-footer {
+    border: none;
+}
+
+.modal-title {
+    font-size: 1.8rem;
+    letter-spacing: 0.5px;
+}
+
+@keyframes fadeInDown {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
     }
 }
 
 @media (max-width: 768px) {
     .header h1 {
-        font-size: 2rem;
+        font-size: 2.5rem;
     }
-
-    .search-section input {
-        font-size: 1rem;
+    .search-section {
+        max-width: 100%;
     }
-
     .course-card {
         h5 {
-            font-size: 1.3rem;
+            font-size: 1.4rem;
         }
-
         p {
             font-size: 1rem;
         }
     }
 }
 
+
 //Job Section
- 
