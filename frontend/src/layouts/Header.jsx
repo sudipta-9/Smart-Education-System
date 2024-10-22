@@ -2,8 +2,12 @@ import { Link } from "react-router-dom";
 import logo from "../assets/logo.png";
 import { FaUser } from "react-icons/fa6";
 import { FaUserAlt } from "react-icons/fa";
+import { useState } from "react"; // Import useState hook
 
 const Header = () => {
+    // Assume user login state is managed here
+    const [isLoggedIn, setIsLoggedIn] = useState(false); // Change based on actual login state
+
     return (
         <>
             <nav className="navbar navbar-expand-lg navbar-light bg-light shadow">
@@ -62,34 +66,46 @@ const Header = () => {
                         </ul>
                     </div>
                     <div className="d-flex">
-                        <Link to="/login">
-                            <button className="btn btn-outline-primary me-2 btn-sm">Login</button>
-                        </Link>
-                        <Link to="/sign-up">
-                            <button className="btn btn-primary btn-sm me-2">Sign Up</button>
-                        </Link>
-                        <div className="dropdown">
-                            <button className="btn btn-dark btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                                User
-                                <FaUser />
-                            </button>
-                            <ul className="dropdown-menu dropdown-menu-end my-3">
-                                <li>
-                                    <a className="dropdown-item my-2" href="/profile">
-                                    <FaUserAlt className="me-2" />
-                                    Profile
-                                    </a>
-                                </li>
-                                <li>
-                                    <center>
-                                        <a className="dropdown-item" href="/home">
-                                            <button type="button" className="btn btn-outline-danger">Logout</button>
-                                        </a>
-                                    </center>
-                                </li>
-                            </ul>
-                        </div>
+                        {!isLoggedIn ? (
+                            <>
+                                <Link to="/login">
+                                    <button className="btn btn-outline-primary me-2 btn-sm">Login</button>
+                                </Link>
+                                <Link to="/sign-up">
+                                    <button className="btn btn-primary btn-sm me-2">Sign Up</button>
+                                </Link>
+                            </>
+                        ) : (
+                            <div className="dropdown">
+                                <button
+                                    className="btn btn-dark btn-sm dropdown-toggle"
+                                    type="button"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false"
+                                >
+                                    User <FaUser />
+                                </button>
+                                <ul className="dropdown-menu dropdown-menu-end my-3">
+                                    <li>
+                                        <Link className="dropdown-item my-2" to="/profile">
+                                            <FaUserAlt className="me-2" />
+                                            Profile
+                                        </Link>
+                                    </li>
+                                    <li>
+                                        <center>
+                                            <button
+                                                type="button"
+                                                className="btn btn-outline-danger"
+                                                onClick={() => setIsLoggedIn(false)} // Logout action
+                                            >
+                                                Logout
+                                            </button>
+                                        </center>
+                                    </li>
+                                </ul>
+                            </div>
+                        )}
                     </div>
                 </div>
             </nav>
