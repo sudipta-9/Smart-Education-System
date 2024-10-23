@@ -32,15 +32,9 @@ const Course = () => {
     return matchesSearch && matchesLevel;
   });
 
-  // Handle course click
+  // Handle course click (only show modal for MIXED level now)
   const handleCourseClick = (courseLevel) => {
-    if (courseLevel === "INTERMEDIATE") {
-      setModalMessage("You need to finish the basic course.");
-      setShowModal(true);
-    } else if (courseLevel === "ADVANCED") {
-      setModalMessage("You need to finish the basic and intermediate courses.");
-      setShowModal(true);
-    } else if (courseLevel === "MIXED") {
+    if (courseLevel === "MIXED") {
       setModalMessage("Mixed-level courses are available for all learners.");
       setShowModal(true);
     }
@@ -74,15 +68,17 @@ const Course = () => {
             <option value="BASIC">Basic</option>
             <option value="INTERMEDIATE">Intermediate</option>
             <option value="ADVANCED">Advanced</option>
-            <option value="MIXED">Mixed</option> {/* Added MIXED option */}
+            <option value="MIXED">Mixed</option>
           </Form.Select>
         </InputGroup>
       </Container>
 
-      {/* Loading Spinner */}
+      {/* Centered Loading Spinner */}
       {loading && (
-        <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">Loading...</span>
+        <div className="spinner-container">
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
         </div>
       )}
 
@@ -112,10 +108,10 @@ const Course = () => {
         </Container>
       )}
 
-      {/* Modal for warnings */}
+      {/* Modal for warnings (only for MIXED courses now) */}
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Access Restricted</Modal.Title>
+          <Modal.Title>Course Information</Modal.Title>
         </Modal.Header>
         <Modal.Body>{modalMessage}</Modal.Body>
         <Modal.Footer>
@@ -124,6 +120,16 @@ const Course = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+
+      {/* Additional Styles for Spinner */}
+      <style jsx>{`
+        .spinner-container {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 50vh; /* Adjust the height based on how centered you want it */
+        }
+      `}</style>
     </>
   );
 };
