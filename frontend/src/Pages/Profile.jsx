@@ -1,250 +1,249 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
-  FaPencilAlt,
   FaLinkedin,
   FaGithub,
   FaEnvelope,
   FaPhone,
-  FaTrashAlt,
-  FaPlus  ,
+  FaEdit,
+  FaPlusCircle,
 } from "react-icons/fa";
 
+const skillQuestions = {
+  beginner: [
+    { question: "What is a variable in Python?", id: 1 },
+    { question: "How do you declare a function in Python?", id: 2 },
+  ],
+  intermediate: [
+    { question: "Explain list comprehensions in Python.", id: 1 },
+    { question: "What are decorators in Python?", id: 2 },
+  ],
+  advanced: [
+    { question: "What is metaprogramming in Python?", id: 1 },
+    { question: "Explain the GIL in Python and its impact.", id: 2 },
+  ],
+};
+
 const Profile = () => {
-  const [data, setData] = useState(null);
+  const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [uploadedPhoto, setUploadedPhoto] = useState(null);
-  const [isEditing, setIsEditing] = useState(false); // Track editing mode
-  const [editableFields, setEditableFields] = useState({
-    name: "",
-    bio: "",
-    address: "",
-    college: "",
-  });
-  const [newSkill, setNewSkill] = useState(""); // Track new skill to be added
-  const [isEditingSkills, setIsEditingSkills] = useState(false); // Track skill editing mode
+  const [error, setError] = useState(null);
+  const [editing, setEditing] = useState(false);
+  const [updatedProfile, setUpdatedProfile] = useState({});
+  const [skills, setSkills] = useState([]);
+  const [showSkillModal, setShowSkillModal] = useState(false);
+  const [newSkill, setNewSkill] = useState({ name: "", level: "beginner" });
+  const [examQuestions, setExamQuestions] = useState([]);
 
   useEffect(() => {
-    // Fetch user data from API
     fetch("http://localhost:4000/api/v1/profile?uId=66f559deba4d59b7d3a8d81d")
       .then((response) => {
         if (!response.ok) {
-          throw new Error(`Network response was not ok: ${response.status}`);
+          throw new Error("Failed to fetch profile data");
         }
         return response.json();
       })
       .then((data) => {
-        setData(data?.data);
-        setEditableFields({
-          name: data?.data.name || "",
-          bio: data?.data.bio || "",
-          address: data?.data.address || "",
-          college: data?.data.college || "",
-        });
-        setError("");
+        setProfile(data.data);
+        setUpdatedProfile(data.data);
+        setLoading(false);
       })
       .catch((error) => {
-        console.error("Fetch error:", error);
-        setError(`Error: ${error.message}`);
-      })
-      .finally(() => setLoading(false));
+        setError(error.message);
+        setLoading(false);
+      });
   }, []);
 
-  const handleSkillDelete = (skill) => {
-    setData({
-      ...data,
-      skills: data.skills.filter((s) => s !== skill),
-    });
+  const handleEditClick = () => setEditing(true);
+  const handleSaveClick = () => {
+    setProfile(updatedProfile);
+    setEditing(false);
   };
 
-  const handleSkillAdd = () => {
-    if (newSkill.trim() !== "") {
-      setData({
-        ...data,
-        skills: [...data.skills, newSkill],
-      });
-      setNewSkill("");
-      setIsEditingSkills(false);
-    }
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setUpdatedProfile((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handlePhotoUpload = (event) => {
-    const file = event.target.files[0];
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setUploadedPhoto(reader.result); // Set the uploaded image
+        setUpdatedProfile((prev) => ({ ...prev, image: reader.result }));
       };
       reader.readAsDataURL(file);
     }
   };
 
-  const handleEditToggle = () => {
-    setIsEditing(!isEditing);
+  const handleAddSkill = () => {
+    setNewSkill({ name: "", level: "beginner" });
+    setExamQuestions(skillQuestions["beginner"]);
+    setShowSkillModal(true);
   };
 
-  const handleChange = (e) => {
-    setEditableFields({
-      ...editableFields,
-      [e.target.name]: e.target.value,
-    });
+  const handleSkillSubmit = () => {
+    if (newSkill.name) {
+      setSkills((prevSkills) => [...prevSkills, newSkill]);
+      setShowSkillModal(false);
+      setNewSkill({ name: "", level: "beginner" });
+    }
   };
 
-  const handleSaveChanges = () => {
-    // Simulate saving to API and updating the state
-    setData({
-      ...data,
-      name: editableFields.name,
-      bio: editableFields.bio,
-      address: editableFields.address,
-      college: editableFields.college,
-    });
-    setIsEditing(false);
+  const handleSkillChange = (e) => {
+    const { name, value } = e.target;
+    setNewSkill((prevSkill) => ({ ...prevSkill, [name]: value }));
+    setExamQuestions(skillQuestions[value]);
   };
+
+  if (loading) {
+    return <div>Loading profile...</div>;
+  }
+
+  if (error) {
+    return <div>Error loading profile: {error}</div>;
+  }
 
   return (
     <div className="profile-section">
-      {loading ? (
-        <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
-      ) : error ? (
-        <div className="text-danger">{error}</div>
-      ) : (
-        data && (
-          <div className="profile-card">
-            <div className="profile-photo">
-              <img
-                src={uploadedPhoto || data.photo || "https://via.placeholder.com/250"}
-                alt="Profile"
-                className="profile-img"
-              />
-              <div className="photo-actions">
-                <label htmlFor="photo-upload" className="photo-upload-label">
-                  <FaPlus  className="upload-icon" />
-                </label>
-                <input
-                  id="photo-upload"
-                  type="file"
-                  accept="image/*"
-                  onChange={handlePhotoUpload}
-                  style={{ display: "none" }}
-                />
-              </div>
-            </div>
-            <div className="profile-details">
-              {isEditing ? (
-                <input
-                  type="text"
-                  name="name"
-                  value={editableFields.name}
-                  onChange={handleChange}
-                  className="form-control mb-2"
-                />
-              ) : (
-                <div className="name">{data.name}</div>
-              )}
+      <div className="profile-image-container">
+        <img
+          src={updatedProfile.image || "default-avatar.png"}
+          alt="Profile"
+          className="profile-image"
+        />
+        <label className="upload-icon">
+          <FaPlusCircle />
+          <input type="file" accept="image/*" onChange={handleImageUpload} />
+        </label>
+      </div>
 
-              <div className="contact-info">
-                <a href={data.linkedin} target="_blank" rel="noopener noreferrer">
-                  <FaLinkedin />
-                </a>
-                <a href={data.github} target="_blank" rel="noopener noreferrer">
-                  <FaGithub />
-                </a>
-                <a href={`mailto:${data.email}`}>
-                  <FaEnvelope />
-                </a>
-                <a href={`tel:${data.phone}`}>
-                  <FaPhone />
-                </a>
-              </div>
+      <div className="profile-details">
+        {editing ? (
+          <>
+            <h2>Edit Profile</h2>
+            <input
+              type="text"
+              name="name"
+              value={updatedProfile.name}
+              onChange={handleInputChange}
+              placeholder="Name"
+              required
+            />
+            <input
+              type="text"
+              name="email"
+              value={updatedProfile.email}
+              onChange={handleInputChange}
+              placeholder="Email"
+              required
+            />
+            <input
+              type="text"
+              name="phone"
+              value={updatedProfile.phone}
+              onChange={handleInputChange}
+              placeholder="Phone"
+              required
+            />
+            <input
+              type="text"
+              name="school"
+              value={updatedProfile.school}
+              onChange={handleInputChange}
+              placeholder="School"
+              required
+            />
+            <input
+              type="text"
+              name="college"
+              value={updatedProfile.college}
+              onChange={handleInputChange}
+              placeholder="College"
+              required
+            />
+            <textarea
+              name="bio"
+              value={updatedProfile.bio}
+              onChange={handleInputChange}
+              placeholder="Bio"
+              rows="3"
+              required
+            />
+            <button onClick={handleSaveClick}>Save Changes</button>
+          </>
+        ) : (
+          <>
+            <h2>{updatedProfile.name}</h2>
+            <p>
+              <FaEnvelope /> {updatedProfile.email}
+            </p>
+            <p>
+              <FaPhone /> {updatedProfile.phone}
+            </p>
+            <p>
+              <FaLinkedin /> {updatedProfile.linkedin}
+            </p>
+            <p>
+              <FaGithub /> {updatedProfile.github}
+            </p>
+            <p>
+              <strong>School:</strong> {updatedProfile.school}
+            </p>
+            <p>
+              <strong>College:</strong> {updatedProfile.college}
+            </p>
+            <p>
+              <strong>Bio:</strong> {updatedProfile.bio}
+            </p>
+            <button onClick={handleEditClick}>
+              <FaEdit /> Edit Profile
+            </button>
+          </>
+        )}
+      </div>
 
-              {isEditing ? (
-                <textarea
-                  name="bio"
-                  value={editableFields.bio}
-                  onChange={handleChange}
-                  className="form-control mb-2"
-                />
-              ) : (
-                <div className="bio fw-bold">Bio: {data.bio || "No bio available"}</div>
-              )}
+      <div className="skills-section">
+        <h2>Skills</h2>
+        <ul>
+          {skills.map((skill, index) => (
+            <li key={index}>
+              {skill.name} ({skill.level})
+            </li>
+          ))}
+        </ul>
+        <button onClick={handleAddSkill}>Add Skill</button>
 
-              {isEditing ? (
-                <input
-                  type="text"
-                  name="address"
-                  value={editableFields.address}
-                  onChange={handleChange}
-                  className="form-control mb-2"
-                />
-              ) : (
-                <div className="address">Address: {data.address}</div>
-              )}
-
-              {isEditing ? (
-                <input
-                  type="text"
-                  name="college"
-                  value={editableFields.college}
-                  onChange={handleChange}
-                  className="form-control mb-2"
-                />
-              ) : (
-                <div className="college">College: {data.college}</div>
-              )}
-
-              <button
-                className="btn btn-primary mt-3"
-                onClick={isEditing ? handleSaveChanges : handleEditToggle}
-              >
-                {isEditing ? "Save Changes" : "Edit"}
-              </button>
-
-              <div className="skills-section">
-                <div className="skills">
-                  {data.skills && data.skills.length > 0 ? (
-                    data.skills.map((skill, index) => (
-                      <div className="skill" key={index}>
-                        {skill}
-                        <FaTrashAlt
-                          className="delete-icon"
-                          onClick={() => handleSkillDelete(skill)}
-                        />
-                      </div>
-                    ))
-                  ) : (
-                    <div>No skills available</div>
-                  )}
-                </div>
-                {isEditingSkills ? (
-                  <div className="add-skill">
-                    <input
-                      type="text"
-                      value={newSkill}
-                      onChange={(e) => setNewSkill(e.target.value)}
-                      className="form-control mb-2"
-                      placeholder="Enter new skill"
-                    />
-                    <button
-                      className="btn btn-success btn-sm"
-                      onClick={handleSkillAdd}
-                    >
-                      Add Skill
-                    </button>
-                  </div>
-                ) : (
-                  <FaPencilAlt
-                    className="edit-skills"
-                    onClick={() => setIsEditingSkills(true)}
-                  />
-                )}
-              </div>
-            </div>
+        {showSkillModal && (
+          <div className="skill-modal">
+            <h3>Add a Skill</h3>
+            <input
+              type="text"
+              name="name"
+              value={newSkill.name}
+              onChange={handleSkillChange}
+              placeholder="Skill Name"
+              required
+            />
+            <select
+              name="level"
+              value={newSkill.level}
+              onChange={handleSkillChange}
+            >
+              <option value="beginner">Beginner</option>
+              <option value="intermediate">Intermediate</option>
+              <option value="advanced">Advanced</option>
+            </select>
+            <button onClick={handleSkillSubmit}>Add Skill</button>
+            <button onClick={() => setShowSkillModal(false)}>Close</button>
+            <h4>Exam Questions</h4>
+            <ul>
+              {examQuestions.map((question) => (
+                <li key={question.id}>{question.question}</li>
+              ))}
+            </ul>
           </div>
-        )
-      )}
+        )}
+      </div>
     </div>
   );
 };
