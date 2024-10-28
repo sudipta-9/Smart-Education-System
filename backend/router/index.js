@@ -208,4 +208,65 @@ router.delete("/delete-course", async (req, res) => {
   }
 });
 
+// Fetch all jobs
+router.get("/jobs", async (req, res) => {
+  try {
+    const jobs = await prisma.jobs.findMany({
+      where: {
+        postUrl: { not: null }, // Use the correct field name here
+      },
+    });
+    if (jobs.length === 0) {
+      return res.status(404).send({ message: "No jobs found!" });
+    }
+    res.status(200).send({ data: jobs });
+  } catch (error) {
+    res.status(500).send({ message: "Server error: " + error.message });
+  }
+});
+
+// Add new jobs
+router.post("/add-jobs", async (req, res) => {
+  try {
+    const jobs = req.body;
+    if (!Array.isArray(jobs)) {
+      throw new Error("Input data must be an array of jobs");
+    }
+
+    const formattedJobs = jobs.map(job => ({
+      employmentType: job["Employment type"],
+      industries: job.Industries,
+      jobFunction: job["Job function"],
+      seniorityLevel: job["Seniority level"],
+      company: job.company,
+      companyId: job.company_id,
+      context: job.context,
+      date: job.date,
+      description: job.description,
+      education: job.education,
+      location: job.location,
+      monthsExperience: job.months_experience,
+      postId: job.post_id,
+      postUrl: job.post_url,
+      salHigh: job.sal_high,
+      salLow: job.sal_low,
+      salary: job.salary,
+      title: job.title,
+    }));
+
+    const newJobs = await prisma.jobs.createMany({
+      data: formattedJobs,
+    });
+
+    res.status(200).send({
+      message: "Jobs created successfully",
+      data: newJobs,
+    });
+  } catch (error) {
+    res.status(400).send({
+      message: "Error creating jobs: " + error.message,
+    });
+  }
+});
+
 export default router;

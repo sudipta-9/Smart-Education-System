@@ -1203,4 +1203,39 @@ $header-text-color: #fff;
     }
   }
   
+// Job Section 
+.job-card {
+    transition: transform 0.3s, box-shadow 0.3s;
+    border: none; // Remove the default border
+    border-radius: 10px; // Add border radius for rounded corners
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); // Shadow for depth
+  
+    &:hover {
+      transform: translateY(-10px) rotateY(5deg); // 3D effect on hover
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3); // Enhanced shadow on hover
+    }
+  
+    .card-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+  
+    .card-subtitle {
+      font-size: 1rem;
+      color: #6c757d; // Muted color for subtitle
+    }
+  
+    .card-link {
+      color: #007bff; // Bootstrap primary color
+      text-decoration: none;
+      
+      &:hover {
+        text-decoration: underline; // Underline on hover
+        color: #0056b3; // Darker blue on hover
+      }
+    }
+  
+    // Optional: Add a gradient background or image
+    background: linear-gradient(145deg, #e6e6e6, #ffffff); // Light gradient background
+  }
   

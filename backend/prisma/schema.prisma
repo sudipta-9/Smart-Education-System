@@ -6,7 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  previewFeature = ["mongodb"]
+  previewFeature = ["createMany"]
 }
 
 datasource db {
@@ -40,4 +40,28 @@ model Course {
   url    String?
   skills String[]
 }
+
+model jobs {
+ id     String   @id @default(auto()) @map("_id") @db.ObjectId
+  employmentType  String
+  industries      String
+  jobFunction     String
+  seniorityLevel  String
+  company         String
+  companyId       Int
+  context         Json
+  date            DateTime
+  description     String
+  education       String
+  location        String
+  monthsExperience Int
+  postId          Int
+  postUrl         String?  // Replace `url` with `postUrl` if this is correct
+  salHigh         Int?
+  salLow          Int?
+  salary          String?
+  title           String
+}
+
+
 
