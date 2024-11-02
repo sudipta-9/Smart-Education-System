@@ -54,7 +54,7 @@ model jobs {
   description     String
   education       String
   location        String
-  monthsExperience Int
+  months_experience Int?
   postId          Int
   postUrl         String?  // Replace `url` with `postUrl` if this is correct
   salHigh         Int?

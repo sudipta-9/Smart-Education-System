@@ -2,6 +2,7 @@ import express from "express";
 const router = express.Router();
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { parseISO, isValid, addDays } from 'date-fns';
 
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
@@ -173,18 +174,22 @@ router.get("/courses", async (req, res) => {
 router.post("/add-course", async (req, res) => {
   try {
     const courses = req.body;
-    if (!Array.isArray(courses)) {
-      throw new Error("Input data must be an array of courses");
+    if (!Array.isArray(courses) || courses.length === 0) {
+      return res.status(400).send({
+        message: "Input data must be a non-empty array of courses",
+      });
     }
+
     const newCourses = await prisma.course.createMany({
       data: courses.map(course => ({
         title: course.title,
         level: course.level,
         url: course.url,
-        skills: course.skills
+        skills: course.skills,
       })),
     });
-    res.status(200).send({
+
+    res.status(201).send({
       message: "Courses created successfully",
       data: newCourses,
     });
@@ -229,36 +234,50 @@ router.get("/jobs", async (req, res) => {
 router.post("/add-jobs", async (req, res) => {
   try {
     const jobs = req.body;
-    if (!Array.isArray(jobs)) {
-      throw new Error("Input data must be an array of jobs");
+    if (!Array.isArray(jobs) || jobs.length === 0) {
+      return res.status(400).send({
+        message: "Input data must be a non-empty array of jobs",
+      });
     }
 
-    const formattedJobs = jobs.map(job => ({
-      employmentType: job["Employment type"],
-      industries: job.Industries,
-      jobFunction: job["Job function"],
-      seniorityLevel: job["Seniority level"],
-      company: job.company,
-      companyId: job.company_id,
-      context: job.context,
-      date: job.date,
-      description: job.description,
-      education: job.education,
-      location: job.location,
-      monthsExperience: job.months_experience,
-      postId: job.post_id,
-      postUrl: job.post_url,
-      salHigh: job.sal_high,
-      salLow: job.sal_low,
-      salary: job.salary,
-      title: job.title,
-    }));
+    const formattedJobs = jobs.map(job => {
+      const randomDays = Math.floor(Math.random() * 30);
+      const jobDate = job.date ? parseISO(job.date) : addDays(new Date(), -randomDays);
+
+      if (!isValid(jobDate)) {
+        throw new Error(`Invalid date format for job title "${job.title}". Expected ISO-8601 DateTime.`);
+      }
+
+      // Generate a random experience if months_experience is null
+      const experience = job.months_experience !== null ? job.months_experience : Math.floor(Math.random() * 12); // Random between 0 to 11 months
+
+      return {
+        employmentType: job["Employment type"],
+        industries: job.Industries,
+        jobFunction: job["Job function"],
+        seniorityLevel: job["Seniority level"],
+        company: job.company,
+        companyId: job.company_id,
+        context: job.context,
+        date: jobDate.toISOString(),
+        description: job.description,
+        education: job.education,
+        location: job.location,
+        months_experience: experience, // Set the random experience or the existing one
+        postId: job.post_id,
+        postUrl: job.post_url,
+        salHigh: job.sal_high,
+        salLow: job.sal_low,
+        salary: job.salary,
+        title: job.title,
+      };
+    });
 
     const newJobs = await prisma.jobs.createMany({
       data: formattedJobs,
     });
 
-    res.status(200).send({
+    res.status(201).send({
       message: "Jobs created successfully",
       data: newJobs,
     });
