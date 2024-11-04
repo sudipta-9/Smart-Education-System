@@ -1206,13 +1206,13 @@ $header-text-color: #fff;
 // Job Section 
 .job-card {
     transition: transform 0.3s, box-shadow 0.3s;
-    border: none; // Remove the default border
-    border-radius: 10px; // Add border radius for rounded corners
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); // Shadow for depth
-  
+    border: none; 
+    border-radius: 10px; 
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); 
+    
     &:hover {
-      transform: translateY(-10px) rotateY(5deg); // 3D effect on hover
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3); // Enhanced shadow on hover
+      transform: translateY(-10px) rotateY(5deg); 
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3); 
     }
   
     .card-title {
@@ -1222,20 +1222,50 @@ $header-text-color: #fff;
   
     .card-subtitle {
       font-size: 1rem;
-      color: #6c757d; // Muted color for subtitle
+      color: #6c757d; 
     }
   
     .card-link {
-      color: #007bff; // Bootstrap primary color
+      color: #007bff; 
       text-decoration: none;
       
       &:hover {
-        text-decoration: underline; // Underline on hover
-        color: #0056b3; // Darker blue on hover
+        text-decoration: underline; 
+        color: #0056b3; 
+      }
+    }
+    
+    background: linear-gradient(145deg, #e6e6e6, #ffffff);
+  }
+  
+  .search-bar {
+    position: relative;
+    margin-bottom: 1.5rem;
+  
+    input {
+      width: 100%;
+      padding: 10px 40px; /* Add padding for a better look */
+      border-radius: 25px; /* Rounded edges for the input */
+      border: 1px solid #ced4da; /* Border color */
+      transition: border-color 0.3s ease;
+  
+      &:focus {
+        border-color: #007bff; /* Change border color on focus */
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add shadow on focus */
       }
     }
   
-    // Optional: Add a gradient background or image
-    background: linear-gradient(145deg, #e6e6e6, #ffffff); // Light gradient background
-  }
+    &::before {
+      content: '\f002'; /* Font Awesome search icon */
+      position: absolute;
+      left: 15px; /* Adjust icon position */
+      top: 50%;
+      transform: translateY(-50%);
+      font-family: "Font Awesome 5 Free"; /* Use Font Awesome for the icon */
+      font-weight: 900; /* Solid style for the icon */
+      color: #6c757d; /* Icon color */
+      font-size: 1.2rem; /* Icon size */
+      pointer-events: none; /* Prevent clicks on the icon */
+    }
+  }  
   

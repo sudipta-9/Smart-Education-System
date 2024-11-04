@@ -2,7 +2,7 @@ import express from "express";
 const router = express.Router();
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { parseISO, isValid, addDays } from 'date-fns';
+import { addDays  } from 'date-fns';
 
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
@@ -242,14 +242,23 @@ router.post("/add-jobs", async (req, res) => {
 
     const formattedJobs = jobs.map(job => {
       const randomDays = Math.floor(Math.random() * 30);
-      const jobDate = job.date ? parseISO(job.date) : addDays(new Date(), -randomDays);
+      let jobDate;
 
-      if (!isValid(jobDate)) {
-        throw new Error(`Invalid date format for job title "${job.title}". Expected ISO-8601 DateTime.`);
+      // Check if job.date exists and is in a valid format using a regular expression
+      if (job.date && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/.test(job.date)) {
+        jobDate = new Date(job.date);
+      } else if (job.date && !isNaN(new Date(job.date).getTime())) {
+        jobDate = new Date(job.date);
+      } else {
+        // If no valid date is provided, use a random date within the past 30 days
+        jobDate = addDays(new Date(), -randomDays);
       }
 
-      // Generate a random experience if months_experience is null
-      const experience = job.months_experience !== null ? job.months_experience : Math.floor(Math.random() * 12); // Random between 0 to 11 months
+      // Format the date to ISO-8601 format
+      const formattedDate = jobDate.toISOString();
+
+      // Generate a random experience if months_experience is null or undefined
+      const experience = job.months_experience != null ? job.months_experience : Math.floor(Math.random() * 12);
 
       return {
         employmentType: job["Employment type"],
@@ -259,11 +268,11 @@ router.post("/add-jobs", async (req, res) => {
         company: job.company,
         companyId: job.company_id,
         context: job.context,
-        date: jobDate.toISOString(),
+        date: formattedDate,  // ISO-8601 formatted date
         description: job.description,
         education: job.education,
         location: job.location,
-        months_experience: experience, // Set the random experience or the existing one
+        months_experience: experience,
         postId: job.post_id,
         postUrl: job.post_url,
         salHigh: job.sal_high,

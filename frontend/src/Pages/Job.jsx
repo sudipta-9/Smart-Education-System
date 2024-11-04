@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Row, Col, Card, Spinner } from 'react-bootstrap';
+import { Container, Row, Col, Card, Spinner, Form } from 'react-bootstrap'; 
 
 const Job = () => {
-  const [jobs, setJobs] = useState([]); // Ensure initial state is an empty array
+  const [jobs, setJobs] = useState([]); 
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState(''); 
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -11,16 +12,15 @@ const Job = () => {
         const response = await fetch('http://localhost:4000/api/v1/jobs');
         const data = await response.json();
         
-        // Check if the data and data.data exist and is an array
         if (data && Array.isArray(data.data)) {
           setJobs(data.data);
         } else {
           console.error('Unexpected response structure:', data);
-          setJobs([]); // Set jobs to empty array if structure is unexpected
+          setJobs([]); 
         }
       } catch (error) {
         console.error('Error fetching jobs:', error);
-        setJobs([]); // Ensure jobs is reset in case of error
+        setJobs([]); 
       } finally {
         setLoading(false);
       }
@@ -28,6 +28,11 @@ const Job = () => {
 
     fetchJobs();
   }, []);
+
+  const filteredJobs = jobs.filter(job =>
+    job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    job.company.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <>
@@ -38,6 +43,16 @@ const Job = () => {
         </Container>
       </header>
       <Container className="my-5">
+        <div className="search-bar">
+          <Form.Group controlId="search">
+            <Form.Control
+              type="text"
+              placeholder="Search for jobs by title or company..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)} 
+            />
+          </Form.Group>
+        </div>
         {loading ? (
           <div className="d-flex justify-content-center align-items-center" style={{ height: '50vh' }}>
             <Spinner animation="border" role="status">
@@ -46,8 +61,8 @@ const Job = () => {
           </div>
         ) : (
           <Row>
-            {jobs.length > 0 ? (
-              jobs.map((job) => (
+            {filteredJobs.length > 0 ? (
+              filteredJobs.map((job) => (
                 <Col md={4} key={job.id} className="mb-4">
                   <Card className="job-card">
                     <Card.Body>
