@@ -1,26 +1,28 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Row, Col, Card, Spinner, Form } from 'react-bootstrap'; 
+import { Container, Row, Col, Card, Spinner, Form, Button } from 'react-bootstrap';
 
 const Job = () => {
-  const [jobs, setJobs] = useState([]); 
+  const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState(''); 
+  const [searchTerm, setSearchTerm] = useState('');
+  const [resume, setResume] = useState(null);
+  const [useResumeSearch, setUseResumeSearch] = useState(false);
 
   useEffect(() => {
     const fetchJobs = async () => {
       try {
         const response = await fetch('http://localhost:4000/api/v1/jobs');
         const data = await response.json();
-        
+
         if (data && Array.isArray(data.data)) {
           setJobs(data.data);
         } else {
           console.error('Unexpected response structure:', data);
-          setJobs([]); 
+          setJobs([]);
         }
       } catch (error) {
         console.error('Error fetching jobs:', error);
-        setJobs([]); 
+        setJobs([]);
       } finally {
         setLoading(false);
       }
@@ -29,10 +31,48 @@ const Job = () => {
     fetchJobs();
   }, []);
 
-  const filteredJobs = jobs.filter(job =>
-    job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    job.company.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const handleResumeUpload = (e) => {
+    const file = e.target.files[0];
+    if (file && file.type === 'application/pdf') {
+      setResume(file);
+    } else {
+      alert('Please upload a PDF file.');
+    }
+  };
+
+  const handleResumeSubmit = async () => {
+    if (!resume) {
+      alert('Please upload a resume first.');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('resume', resume);
+
+    try {
+      const response = await fetch('http://localhost:4000/api/v1/upload-resume', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (response.ok) {
+        const matchingJobs = await response.json();
+        setJobs(matchingJobs.data); // Assuming the API returns matching jobs based on resume analysis
+        alert('Resume uploaded successfully!');
+      } else {
+        alert('Failed to upload resume.');
+      }
+    } catch (error) {
+      console.error('Error uploading resume:', error);
+    }
+  };
+
+  const filteredJobs = useResumeSearch
+    ? jobs
+    : jobs.filter(job =>
+        job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        job.company.toLowerCase().includes(searchTerm.toLowerCase())
+      );
 
   return (
     <>
@@ -42,17 +82,51 @@ const Job = () => {
           <p>Discover job opportunities that align with your skill level and career aspirations.</p>
         </Container>
       </header>
+
       <Container className="my-5">
-        <div className="search-bar">
-          <Form.Group controlId="search">
-            <Form.Control
-              type="text"
-              placeholder="Search for jobs by title or company..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)} 
-            />
-          </Form.Group>
+        {/* Toggle between Search and Resume Upload */}
+        <div className="toggle-section mb-4 d-flex justify-content-center">
+          <Button
+            variant={!useResumeSearch ? 'primary' : 'outline-primary'}
+            onClick={() => setUseResumeSearch(false)}
+          >
+            Search by Title or Company
+          </Button>
+          <Button
+            variant={useResumeSearch ? 'primary' : 'outline-primary'}
+            onClick={() => setUseResumeSearch(true)}
+            className="mx-3" // Added margin to create space
+          >
+            Upload Resume for Recommendations
+          </Button>
         </div>
+
+        {/* Conditional Render based on selected option */}
+        {!useResumeSearch ? (
+          <div className="search-bar mb-4">
+            <Form.Group controlId="search">
+              <Form.Control
+                type="text"
+                placeholder="Search for jobs by title or company..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </Form.Group>
+          </div>
+        ) : (
+          <div className="resume-upload mb-4">
+            <Form.Group controlId="resumeUpload">
+              <Form.Label>Upload your resume (PDF only):</Form.Label>
+              <div className="resume-upload-box">
+                <Form.Control type="file" accept=".pdf" onChange={handleResumeUpload} />
+                <Button variant="primary" onClick={handleResumeSubmit} disabled={!resume} className="upload-btn">
+                  Upload Resume
+                </Button>
+              </div>
+            </Form.Group>
+          </div>
+        )}
+
         {loading ? (
           <div className="d-flex justify-content-center align-items-center" style={{ height: '50vh' }}>
             <Spinner animation="border" role="status">

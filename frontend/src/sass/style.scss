@@ -1206,13 +1206,13 @@ $header-text-color: #fff;
 // Job Section 
 .job-card {
     transition: transform 0.3s, box-shadow 0.3s;
-    border: none; 
-    border-radius: 10px; 
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); 
-    
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  
     &:hover {
-      transform: translateY(-10px) rotateY(5deg); 
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3); 
+      transform: translateY(-10px) rotateY(5deg);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
     }
   
     .card-title {
@@ -1222,19 +1222,19 @@ $header-text-color: #fff;
   
     .card-subtitle {
       font-size: 1rem;
-      color: #6c757d; 
+      color: #6c757d;
     }
   
     .card-link {
-      color: #007bff; 
+      color: #007bff;
       text-decoration: none;
-      
+  
       &:hover {
-        text-decoration: underline; 
-        color: #0056b3; 
+        text-decoration: underline;
+        color: #0056b3;
       }
     }
-    
+  
     background: linear-gradient(145deg, #e6e6e6, #ffffff);
   }
   
@@ -1244,28 +1244,79 @@ $header-text-color: #fff;
   
     input {
       width: 100%;
-      padding: 10px 40px; /* Add padding for a better look */
-      border-radius: 25px; /* Rounded edges for the input */
-      border: 1px solid #ced4da; /* Border color */
+      padding: 10px 40px;
+      border-radius: 25px;
+      border: 1px solid #ced4da;
       transition: border-color 0.3s ease;
   
       &:focus {
-        border-color: #007bff; /* Change border color on focus */
-        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add shadow on focus */
+        border-color: #007bff;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
       }
     }
   
     &::before {
-      content: '\f002'; /* Font Awesome search icon */
+      content: '\f002';
       position: absolute;
-      left: 15px; /* Adjust icon position */
+      left: 15px;
       top: 50%;
       transform: translateY(-50%);
-      font-family: "Font Awesome 5 Free"; /* Use Font Awesome for the icon */
-      font-weight: 900; /* Solid style for the icon */
-      color: #6c757d; /* Icon color */
-      font-size: 1.2rem; /* Icon size */
-      pointer-events: none; /* Prevent clicks on the icon */
+      font-family: "Font Awesome 5 Free";
+      font-weight: 900;
+      color: #6c757d;
+      font-size: 1.2rem;
+      pointer-events: none;
     }
-  }  
+  }
+  
+  .resume-upload {
+    .resume-upload-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem;
+      border: 2px dashed #007bff;
+      border-radius: 12px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+  
+      &:hover {
+        transform: scale(1.02);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      }
+  
+      input {
+        width: 75%;
+        padding: 10px;
+        border: none;
+        border-radius: 8px;
+        outline: none;
+        background-color: #f9f9f9;
+      }
+  
+      .upload-btn {
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: bold;
+        transition: background-color 0.3s, transform 0.3s;
+        background-color: #007bff;
+        color: #fff;
+  
+        &:hover {
+          background-color: #0056b3;
+          transform: translateY(-3px);
+        }
+      }
+    }
+  }
+  
+  .toggle-section {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+  
+    .btn {
+      margin: 0 0.5rem;
+    }
+  }
+   
   
