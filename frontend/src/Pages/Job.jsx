@@ -7,6 +7,7 @@ const Job = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [resume, setResume] = useState(null);
   const [useResumeSearch, setUseResumeSearch] = useState(false);
+  const [resumeSkills, setResumeSkills] = useState([]);
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -56,8 +57,9 @@ const Job = () => {
       });
 
       if (response.ok) {
-        const matchingJobs = await response.json();
-        setJobs(matchingJobs.data); // Assuming the API returns matching jobs based on resume analysis
+        const result = await response.json();
+        setJobs(result.data); // Assuming the API returns matching jobs
+        setResumeSkills(result.skills); // Assuming the API returns extracted skills
         alert('Resume uploaded successfully!');
       } else {
         alert('Failed to upload resume.');
@@ -69,7 +71,7 @@ const Job = () => {
 
   const filteredJobs = useResumeSearch
     ? jobs
-    : jobs.filter(job =>
+    : jobs.filter((job) =>
         job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         job.company.toLowerCase().includes(searchTerm.toLowerCase())
       );
@@ -95,7 +97,7 @@ const Job = () => {
           <Button
             variant={useResumeSearch ? 'primary' : 'outline-primary'}
             onClick={() => setUseResumeSearch(true)}
-            className="mx-3" // Added margin to create space
+            className="mx-3"
           >
             Upload Resume for Recommendations
           </Button>
@@ -123,6 +125,11 @@ const Job = () => {
                   Upload Resume
                 </Button>
               </div>
+              {resumeSkills.length > 0 && (
+                <div className="resume-skills mt-3">
+                  <strong>Detected Skills:</strong> {resumeSkills.join(', ')}
+                </div>
+              )}
             </Form.Group>
           </div>
         )}
