@@ -5,18 +5,6 @@ import useAuthStore from "../../../store/useAuthStore";
 import { toast } from "react-toastify";
 
 const SignUp = () => {
-  // const [data, setData] = useState();
-  // const [loading, setLoading] = useState(true);
-  // const [error, setError] = useState(false);
-
-  // useEffect(() => {
-  //     fetch("http://localhost:4000/api/v1/register?uId=66ef907dc73008b1a6ba8149")
-  //         .then((response) => response.json())
-  //         .then((data) => setData(data))
-  //         .catch((error) => setError("Error:", error))
-  //         .finally(() => setLoading(false), setError(""));
-  // }, []);
-
   const { signup } = useAuthStore();
 
   const [newUser, setNewUser] = useState({
@@ -28,12 +16,16 @@ const SignUp = () => {
 
   const navigate = useNavigate();
 
-  const handleSignup = (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
-    const response = signup(newUser);
-    if (!response.success) toast.error(response.message);
-    else {
-      toast.success(response.message);
+
+    // Perform signup and handle the response
+    const response = await signup(newUser);
+
+    if (!response?.success) {
+      toast.error(response?.message || "Signup failed");
+    } else {
+      toast.success(response.message || "Signup successful");
       navigate("/login");
     }
   };
@@ -41,20 +33,23 @@ const SignUp = () => {
   return (
     <div className="signup-page">
       <div className="back-button">
-        <Link to={"/"} className="back-link">
+        <Link to="/" className="back-link">
           <FaRegArrowAltCircleLeft className="back-icon" /> Back
         </Link>
       </div>
       <div className="signup-container">
         <div className="form-box">
-          <form>
+          <form onSubmit={handleSignup}>
             <input
               type="text"
               name="name"
               placeholder="Name"
               className="input-field"
               value={newUser.name}
-              onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
+              onChange={(e) =>
+                setNewUser({ ...newUser, name: e.target.value })
+              }
+              required
             />
             <input
               type="text"
@@ -65,6 +60,7 @@ const SignUp = () => {
               onChange={(e) =>
                 setNewUser({ ...newUser, username: e.target.value })
               }
+              required
             />
             <input
               type="email"
@@ -75,6 +71,7 @@ const SignUp = () => {
               onChange={(e) =>
                 setNewUser({ ...newUser, email: e.target.value })
               }
+              required
             />
             <input
               type="password"
@@ -85,13 +82,14 @@ const SignUp = () => {
               onChange={(e) =>
                 setNewUser({ ...newUser, password: e.target.value })
               }
+              required
             />
             <div className="remember-section">
               <label>
                 <input type="checkbox" /> Remember password
               </label>
             </div>
-            <button className="submit-btn" onClick={(e) => handleSignup(e)}>
+            <button className="submit-btn" type="submit">
               Sign Up
             </button>
           </form>
